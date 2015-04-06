@@ -6,4 +6,10 @@ Require Import Omega.
 Definition paire_entiers := (nat * nat)%type.
 Definition nuplet := (nat * bool) %type.
 
-Definition plateau : nuplet := (9,true).
+Inductive plateau : Type := new_plateau :
+bool->bool->bool->bool->bool->bool->bool->bool->bool->plateau.
+
+
+
+
+(*Definition plateau : nuplet := (9,true).*)
