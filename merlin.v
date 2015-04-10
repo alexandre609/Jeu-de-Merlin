@@ -55,3 +55,31 @@ Qed.
 (*Lemma double_clic : forall (Plat:plateau), forall (Coord : coord),
 applique_clic(applique_clic Plat Coord) Coord = Plat.
 intros.*)
+
+(*Lemma commut : forall (P:plateau), forall (A B : coord),
+applique_clic(applique_clic P A) B = applique_clic(applique_clic P B) A.*)
+
+Function change_une_coord (Coord : coord) : partie :=
+match Coord with
+|(a,a) => (a,a)::(a,b)::(a,c)::(b,a)::(b,b)::(c,a)::nil
+|(a,c) => (a,c)::(b,c)::(c,c)::(a,b)::(b,b)::(a,a)::nil
+|(c,c) => (c,c)::(c,b)::(c,a)::(b,c)::(b,b)::(a,c)::nil
+|(c,a) => (c,a)::(b,a)::(a,a)::(c,b)::(b,b)::(c,c)::nil
+|(b,b) => (b,b)::(a,b)::(b,a)::(c,b)::(b,c)::nil
+|(b,a) => (b,a)::(a,b)::(a,c)::(c,b)::(c,c)::nil
+|(b,c) => (b,c)::(a,b)::(a,a)::(c,b)::(c,a)::nil
+|(a,b) => (a,b)::(b,a)::(c,a)::(b,c)::(c,c)::nil
+|(c,b) => (c,b)::(b,a)::(a,a)::(b,c)::(a,c)::nil
+end.
+
+Compute applique_partie plateau_init_test (change_une_coord (a,a)).
+Compute applique_partie plateau_init_test (change_une_coord (a,b)).
+Compute applique_partie plateau_init_test (change_une_coord (a,c)).
+Compute applique_partie plateau_init_test (change_une_coord (b,a)).
+Compute applique_partie plateau_init_test (change_une_coord (b,b)).
+Compute applique_partie plateau_init_test (change_une_coord (b,c)).
+Compute applique_partie plateau_init_test (change_une_coord (c,a)).
+Compute applique_partie plateau_init_test (change_une_coord (c,b)).
+Compute applique_partie plateau_init_test (change_une_coord (c,c)).
+
+(*Function liste_blanches (Plat : plateau) : list coord :=*)
