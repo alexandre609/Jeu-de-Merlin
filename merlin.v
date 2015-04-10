@@ -35,3 +35,15 @@ match Part with
 end.
 
 Definition plateau_init_test : plateau := (false,false,false,false,false,false,false,false,false).
+
+Definition plateau_gagnant (Plat : plateau) : Prop :=
+Plat = (true,true,true,true,true,true,true,true,true).
+
+Definition partie_gagnante (Plat : plateau) (Part : partie) : Prop :=
+plateau_gagnant(applique_partie Plat Part).
+
+(*Theorem exists_partie_gagnante_pour_init_test :
+    exists p, partie_gagnante plateau_init_test p.
+Proof.
+
+Qed.*)
