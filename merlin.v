@@ -42,8 +42,16 @@ Plat = (true,true,true,true,true,true,true,true,true).
 Definition partie_gagnante (Plat : plateau) (Part : partie) : Prop :=
 plateau_gagnant(applique_partie Plat Part).
 
-(*Theorem exists_partie_gagnante_pour_init_test :
+Theorem exists_partie_gagnante_pour_init_test :
     exists p, partie_gagnante plateau_init_test p.
 Proof.
+exists ((a,a)::(a,c)::(c,c)::(c,a)::(b,b)::nil).
+unfold partie_gagnante.
+simpl.
+unfold plateau_gagnant.
+reflexivity.
+Qed.
 
-Qed.*)
+(*Lemma double_clic : forall (Plat:plateau), forall (Coord : coord),
+applique_clic(applique_clic Plat Coord) Coord = Plat.
+intros.*)
