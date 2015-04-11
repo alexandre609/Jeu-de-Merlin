@@ -52,12 +52,29 @@ unfold plateau_gagnant.
 reflexivity.
 Qed.
 
-(*Lemma double_clic : forall (Plat:plateau), forall (Coord : coord),
+Lemma double_clic : forall (Plat:plateau), forall (Coord : coord),
 applique_clic(applique_clic Plat Coord) Coord = Plat.
-intros.*)
+Proof.
+intros.
+destruct Plat.
+destruct p,p,p,p,p,p,p.
+unfold applique_clic.
+destruct Coord.
+case c0;case c1;rewrite ?negb_involutive;reflexivity.
+Qed.
 
-(*Lemma commut : forall (P:plateau), forall (A B : coord),
-applique_clic(applique_clic P A) B = applique_clic(applique_clic P B) A.*)
+
+Lemma commut : forall (P:plateau), forall (A B : coord),
+applique_clic(applique_clic P A) B = applique_clic(applique_clic P B) A.
+Proof.
+intros.
+destruct P.
+destruct p, p, p, p, p, p, p.
+destruct A.
+destruct B.
+unfold applique_clic.
+case c0;case c1;case c2;case c3;simpl;trivial.
+Qed.
 
 Function change_une_coord (Coord : coord) : partie :=
 match Coord with
@@ -72,14 +89,44 @@ match Coord with
 |(c,b) => (c,b)::(b,a)::(a,a)::(b,c)::(a,c)::nil
 end.
 
-Compute applique_partie plateau_init_test (change_une_coord (a,a)).
-Compute applique_partie plateau_init_test (change_une_coord (a,b)).
-Compute applique_partie plateau_init_test (change_une_coord (a,c)).
-Compute applique_partie plateau_init_test (change_une_coord (b,a)).
-Compute applique_partie plateau_init_test (change_une_coord (b,b)).
-Compute applique_partie plateau_init_test (change_une_coord (b,c)).
-Compute applique_partie plateau_init_test (change_une_coord (c,a)).
-Compute applique_partie plateau_init_test (change_une_coord (c,b)).
-Compute applique_partie plateau_init_test (change_une_coord (c,c)).
+(*Compute applique_partie plateau_init_test (change_une_coord (a,a)).*)
 
-(*Function liste_blanches (Plat : plateau) : list coord :=*)
+Fixpoint liste_blanches_aux (Plat : plateau) (n : nat) {struct n} : partie :=
+match n, Plat with
+| O,  _ => nil
+| S p, (true,true,true,true,true,true,true,true,true)         => nil
+| S p, (false, a12, a13, a21, a22, a23, a31, a32, a33)        => (a,a)::liste_blanches_aux (true, a12, a13, a21, a22, a23, a31, a32, a33) p
+| S p, (true, false, a13, a21, a22, a23, a31, a32, a33)       => (a,b)::liste_blanches_aux (true, true, a13, a21, a22, a23, a31, a32, a33) p
+| S p, (true, true, false, a21, a22, a23, a31, a32, a33)      => (a,c)::liste_blanches_aux (true, true, true, a21, a22, a23, a31, a32, a33) p
+| S p, (true, true, true, false, a22, a23, a31, a32, a33)     => (b,a)::liste_blanches_aux (true, true, true, true, a22, a23, a31, a32, a33) p
+| S p, (true, true, true, true, false, a23, a31, a32, a33)    => (b,b)::liste_blanches_aux (true, true, true, true, true, a23, a31, a32, a33) p
+| S p, (true, true, true, true, true, false, a31, a32, a33)   => (b,c)::liste_blanches_aux (true, true, true, true, true, true, a31, a32, a33) p
+| S p, (true, true, true, true, true, true, false, a32, a33)  => (c,a)::liste_blanches_aux (true, true, true, true, true, true, true, a32, a33) p
+| S p, (true, true, true, true, true, true, true, false, a33) => (c,b)::liste_blanches_aux (true, true, true, true, true, true, true, true, a33) p
+| S p, (true, true, true, true, true, true, true, true, false)=> (c,c)::liste_blanches_aux (true, true, true, true, true, true, true, true, true) p
+end.
+
+Definition liste_blanches (plateau : plateau) : partie :=
+liste_blanches_aux plateau 9.
+
+(*Compute liste_blanches plateau_init_test.*)
+Fixpoint strategie_gagnante_pour_liste_des_blanches (liste_des_blanches : partie) := 
+match liste_des_blanches with
+| nil => nil
+| cons first rest => (change_une_coord first) ++ (strategie_gagnante_pour_liste_des_blanches rest)
+end.
+
+Fixpoint strategie_gagnante (plateau : plateau) : partie :=
+strategie_gagnante_pour_liste_des_blanches (liste_blanches plateau).
+
+Compute strategie_gagnante (false,false,false,false,false,false,false,false,false).
+
+Compute strategie_gagnante (true,true,true,true,true,true,false,false,false).
+
+
+
+(*Function strategie_gagnante (Plat : plateau) : partie :=
+map (change_une_coord) (liste_blanches Plat).*)
+Function if_even_then_nil_else_id (Part:partie) (Case:coord) : partie :=
+Part.
+
