@@ -120,13 +120,42 @@ Fixpoint strategie_gagnante (plateau : plateau) : partie :=
 strategie_gagnante_pour_liste_des_blanches (liste_blanches plateau).
 
 Compute strategie_gagnante (false,false,false,false,false,false,false,false,false).
-
 Compute strategie_gagnante (true,true,true,true,true,true,false,false,false).
 
+Lemma coord_eq_dec : forall (x y : coord), {x = y} + {x <> y}.
+Proof.
+intros.
+destruct x, y.
+destruct c0, c1, c2, c3;
+  try (left; congruence);
+  try (right; congruence).
+Qed.
 
-
-(*Function strategie_gagnante (Plat : plateau) : partie :=
-map (change_une_coord) (liste_blanches Plat).*)
 Function if_even_then_nil_else_id (Part:partie) (Case:coord) : partie :=
-Part.
+match Part with 
+| nil => nil
+| _ => if Even.even_odd_dec (count_occ coord_eq_dec Part Case) then nil else Case :: nil
+end.
 
+Function partie_simplifiee (Part : partie) : partie :=
+   if_even_then_nil_else_id Part (a,a) ++ if_even_then_nil_else_id Part (a,b) ++ if_even_then_nil_else_id Part (a,c)
+++ if_even_then_nil_else_id Part (b,a) ++ if_even_then_nil_else_id Part (b,b) ++ if_even_then_nil_else_id Part (b,c)
+++ if_even_then_nil_else_id Part (c,a) ++ if_even_then_nil_else_id Part (c,b) ++ if_even_then_nil_else_id Part (c,c).
+
+
+(*Lemma max_neuf_coups : forall (Part : partie),
+(length (partie_simplifiee Part)) <= 9.
+Proof.
+intros.
+induction Part.
+unfold partie_simplifiee.
+simpl.
+omega.
+induction Part.
+unfold partie_simplifiee.
+simpl.
+induction (coord_eq_dec a0).
+simpl.
+apply plus_le_compat.
+assumption.
+Qed.*)
